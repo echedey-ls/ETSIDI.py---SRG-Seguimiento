@@ -6,7 +6,7 @@ Author: Echedey Luis Álvarez
 Date: 13/09/2021
 Project: Action-monitoring, for ETSIDI.py
 
-File: Action-monitoring
+File: Action-monitoring.py
 
 Abstract: main file
 
