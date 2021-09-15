@@ -19,6 +19,7 @@ from datetime import timedelta, datetime
 
 import pandas as pd
 import numpy as np
+import streamlit as st
 
 def retrieve_data_from_drive():
     '''TODO: implement cloud service'''
@@ -28,6 +29,13 @@ def retrieve_data_from_xlsx():
     '''Gets data from a excel sheet (>2007)'''
     return pd.read_excel('registro_acciones.xlsx', sheet_name='Actuaciones', usecols='B:C', header=1, parse_dates=True)
 
+def web_gui(sobrepasadasDf, proximasDf):
+    st.title("Progreso en acciones")
+    st.header("Zonas a revisar")
+    st.dataframe(sobrepasadasDf)
+
+    st.header("Próximas zonas a revisar")
+    st.dataframe(proximasDf)
 
 def main():
     accionesData = (retrieve_data_from_xlsx()
@@ -36,6 +44,8 @@ def main():
         )
     print( "Histórico de acciones" )
     print( accionesData )
+
+    accionesData['FECHA'] = pd.to_datetime(accionesData['FECHA']).dt.date
     
     accionesParsedDf = pd.DataFrame( columns=['LUGAR', 'HISTORICO'] )
     for lugar in accionesData['LUGAR'].unique():
@@ -49,7 +59,7 @@ def main():
     print( accionesParsedDf )
 
     print( "\nSUMARIO DE MANTENIMIENTO DE ACCIONES" )
-    logicalMap_sobrepasadas = [fecha[-1]<datetime.now()-timedelta(days=30*4) for fecha in accionesParsedDf['HISTORICO'].to_list()]
+    logicalMap_sobrepasadas = [fecha[-1]<datetime.now().date()-timedelta(days=30*4) for fecha in accionesParsedDf['HISTORICO'].to_list()]
     
     print( "\n\t--> TIEMPO SOBREPASADO" )
     accionesSobrepasadas = accionesParsedDf[ logicalMap_sobrepasadas ]
@@ -70,6 +80,8 @@ def main():
         .sort_values('FECHA_ULTIMA')
     )
     print( accionesProximasOut )
+
+    web_gui(accionesSobrepasadasOut, accionesProximasOut)
 
 
 if __name__ == "__main__":
