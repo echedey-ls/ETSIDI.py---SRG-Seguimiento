@@ -51,7 +51,7 @@ def main():
     print( "\nSUMARIO DE MANTENIMIENTO DE ACCIONES" )
     logicalMap_sobrepasadas = [fecha[-1]<datetime.now()-timedelta(days=30*4) for fecha in accionesParsedDf['HISTORICO'].to_list()]
     
-    print( "\t--> TIEMPO SOBREPASADO" )
+    print( "\n\t--> TIEMPO SOBREPASADO" )
     accionesSobrepasadas = accionesParsedDf[ logicalMap_sobrepasadas ]
     # Copiamos los lugares como DataFrame (doble corchete), luego añadimos columna con última fecha para cada acción
     accionesSobrepasadasOut = accionesSobrepasadas[['LUGAR']]
@@ -61,7 +61,7 @@ def main():
     )
     print( accionesSobrepasadasOut )
 
-    print( "\t--> PRÓXIMAS REVISIONES" )
+    print( "\n\t--> PRÓXIMAS REVISIONES" )
     accionesProximas = accionesParsedDf[ [not a for a in logicalMap_sobrepasadas] ]
     # Idem anterior
     accionesProximasOut = accionesProximas[['LUGAR']]
