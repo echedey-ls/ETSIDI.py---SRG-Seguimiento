@@ -26,12 +26,12 @@ def retrieve_data_from_drive():
     
 def retrieve_data_from_xlsx():
     '''Gets data from a excel sheet (>2007)'''
-    return pd.read_excel('registro_acciones.xlsx', sheet_name='Actuaciones', usecols='B:C', header=1, parse_dates=True)
+    return pd.read_excel('registro_acciones.xlsx', sheet_name='Actuaciones', usecols='B:D', header=1, parse_dates=True)
 
 
 def main():
     accionesData = (retrieve_data_from_xlsx()
-            .dropna()
+            .dropna(how= 'all')
             .sort_values('FECHA')
         )
     print( "Histórico de acciones" )
@@ -49,6 +49,8 @@ def main():
     print( accionesParsedDf )
 
     print( "\nSUMARIO DE MANTENIMIENTO DE ACCIONES" )
+
+    # Mapa lógico de acciones que ya deberían haberse revisado
     logicalMap_sobrepasadas = [fecha[-1]<datetime.now()-timedelta(days=30*4) for fecha in accionesParsedDf['HISTORICO'].to_list()]
     
     print( "\n\t--> TIEMPO SOBREPASADO" )
