@@ -33,6 +33,7 @@ def retrieve_data_from_xlsx():
     return pd.read_excel('registro_acciones.xlsx', sheet_name='Actuaciones', usecols='B:C', header=1, parse_dates=True)
 
 def web_gui(sobrepasadasDf, proximasDf):
+    '''Uses Streamlit to produce the web page'''
     st.set_page_config(
         page_title= 'Revisiones SinRaboGato',
         page_icon= 'res/page-SRG-icon.png'
@@ -94,9 +95,10 @@ def main():
         print( "\n\t--> PRÓXIMAS REVISIONES" )
         print( accionesProximasOut )
 
-    web_gui(accionesSobrepasadasOut.rename(columns= {'LUGAR': 'Lugar', 'FECHA_ULTIMA': 'Última actuación'}).reset_index(),
-        accionesProximasOut.rename(columns= {'LUGAR': 'Lugar', 'FECHA_ULTIMA': 'Última actuación'}).reset_index()
-    )
+    if not dev_consoleOut:
+        web_gui(accionesSobrepasadasOut.rename(columns= {'LUGAR': 'Lugar', 'FECHA_ULTIMA': 'Última actuación'}).reset_index(),
+            accionesProximasOut.rename(columns= {'LUGAR': 'Lugar', 'FECHA_ULTIMA': 'Última actuación'}).reset_index()
+        )
 
 
 if __name__ == "__main__":
