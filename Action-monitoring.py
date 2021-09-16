@@ -47,8 +47,9 @@ def web_gui(sobrepasadasDf, proximasDf):
     st.dataframe(proximasDf)
 
 def main():
+    # Read data from excel, drop rows with less than 2 values: FECHA & FECHA
     accionesData = (retrieve_data_from_xlsx()
-            .dropna()
+            .dropna(axis= 0, thresh= 2)
             .sort_values('FECHA')
         )
     
