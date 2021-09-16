@@ -88,17 +88,26 @@ def main():
         .sort_values('FECHA_ULTIMA')
     )
 
+    # Reset index to numbers starting by 1
+    accionesSobrepasadasOut = (accionesSobrepasadasOut
+        .rename(columns= {'LUGAR': 'Lugar', 'FECHA_ULTIMA': 'Última actuación'})
+        .reset_index(drop= True) )
+    accionesSobrepasadasOut.index += 1
+
+    accionesProximasOut = (accionesProximasOut
+        .rename(columns= {'LUGAR': 'Lugar', 'FECHA_ULTIMA': 'Última actuación'})
+        .reset_index(drop= True) )
+    accionesProximasOut.index += 1
+
+    # Output user-friendly DataFrames, else use Streamlit for the web
     if dev_consoleOut:
         print( "\nSUMARIO DE MANTENIMIENTO DE ACCIONES" )
         print( "\n\t--> TIEMPO SOBREPASADO" )
         print( accionesSobrepasadasOut )
         print( "\n\t--> PRÓXIMAS REVISIONES" )
         print( accionesProximasOut )
-
-    if not dev_consoleOut:
-        web_gui(accionesSobrepasadasOut.rename(columns= {'LUGAR': 'Lugar', 'FECHA_ULTIMA': 'Última actuación'}).reset_index(),
-            accionesProximasOut.rename(columns= {'LUGAR': 'Lugar', 'FECHA_ULTIMA': 'Última actuación'}).reset_index()
-        )
+    else:
+        web_gui( accionesSobrepasadasOut , accionesProximasOut )
 
 
 if __name__ == "__main__":
