@@ -21,6 +21,9 @@ import pandas as pd
 import numpy as np
 import streamlit as st
 
+# Set to True to see output in the console. Set to False in releases.
+dev_consoleOut = False
+
 def retrieve_data_from_drive():
     '''TODO: implement cloud service'''
     pass
@@ -47,11 +50,13 @@ def main():
             .dropna()
             .sort_values('FECHA')
         )
-    print( "Histórico de acciones" )
-    print( accionesData )
+    
+    if dev_consoleOut:
+        print( "Histórico de acciones" )
+        print( accionesData )
 
     accionesData['FECHA'] = pd.to_datetime(accionesData['FECHA']).dt.date
-    
+
     accionesParsedDf = pd.DataFrame( columns=['LUGAR', 'HISTORICO'] )
     for lugar in accionesData['LUGAR'].unique():
         dates = accionesData[accionesData['LUGAR'] == lugar]['FECHA'].to_list()
@@ -60,13 +65,12 @@ def main():
             pd.DataFrame( {'LUGAR': [lugar], 'HISTORICO': [dates] }, columns=['LUGAR', 'HISTORICO'] ) ], 
             ignore_index=True)
 
-    print( "\nAcciones y su lista de actuaciones" )
-    print( accionesParsedDf )
+    if dev_consoleOut:
+        print( "\nAcciones y su lista de actuaciones" )
+        print( accionesParsedDf )
 
-    print( "\nSUMARIO DE MANTENIMIENTO DE ACCIONES" )
     logicalMap_sobrepasadas = [fecha[-1]<datetime.now().date()-timedelta(days=30*4) for fecha in accionesParsedDf['HISTORICO'].to_list()]
-    
-    print( "\n\t--> TIEMPO SOBREPASADO" )
+
     accionesSobrepasadas = accionesParsedDf[ logicalMap_sobrepasadas ]
     # Copiamos los lugares como DataFrame (doble corchete), luego añadimos columna con última fecha para cada acción
     accionesSobrepasadasOut = accionesSobrepasadas[['LUGAR']]
@@ -74,9 +78,7 @@ def main():
         .assign( FECHA_ULTIMA= [ fecha[-1] for fecha in accionesSobrepasadas['HISTORICO'].to_list() ] )
         .sort_values('FECHA_ULTIMA')
     )
-    print( accionesSobrepasadasOut )
 
-    print( "\n\t--> PRÓXIMAS REVISIONES" )
     accionesProximas = accionesParsedDf[ [not a for a in logicalMap_sobrepasadas] ]
     # Idem anterior
     accionesProximasOut = accionesProximas[['LUGAR']]
@@ -84,9 +86,17 @@ def main():
         .assign( FECHA_ULTIMA= [ fecha[-1] for fecha in accionesProximas['HISTORICO'].to_list() ] )
         .sort_values('FECHA_ULTIMA')
     )
-    print( accionesProximasOut )
 
-    web_gui(accionesSobrepasadasOut, accionesProximasOut)
+    if dev_consoleOut:
+        print( "\nSUMARIO DE MANTENIMIENTO DE ACCIONES" )
+        print( "\n\t--> TIEMPO SOBREPASADO" )
+        print( accionesSobrepasadasOut )
+        print( "\n\t--> PRÓXIMAS REVISIONES" )
+        print( accionesProximasOut )
+
+    web_gui(accionesSobrepasadasOut.rename(columns= {'LUGAR': 'Lugar', 'FECHA_ULTIMA': 'Última actuación'}).reset_index(),
+        accionesProximasOut.rename(columns= {'LUGAR': 'Lugar', 'FECHA_ULTIMA': 'Última actuación'}).reset_index()
+    )
 
 
 if __name__ == "__main__":
