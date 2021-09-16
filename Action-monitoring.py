@@ -30,6 +30,11 @@ def retrieve_data_from_xlsx():
     return pd.read_excel('registro_acciones.xlsx', sheet_name='Actuaciones', usecols='B:C', header=1, parse_dates=True)
 
 def web_gui(sobrepasadasDf, proximasDf):
+    st.set_page_config(
+        page_title= 'Revisiones SinRaboGato',
+        page_icon= 'res/page-SRG-icon.png'
+    )
+
     st.title("Progreso en acciones")
     st.header("Zonas a revisar")
     st.dataframe(sobrepasadasDf)
