@@ -1,0 +1,10 @@
+##### SRG Seguimiento #####
+# Requirements list
+
+# Packages
+datetime
+numpy
+pandas
+
+# Packages with version
+streamlit >= 0.88
