@@ -57,8 +57,10 @@ def main():
         print( "Histórico de acciones" )
         print( accionesData )
 
+    # Change dates type from datetime to date - user-friendlyness
     accionesData['FECHA'] = pd.to_datetime(accionesData['FECHA']).dt.date
 
+    # Create a new dataframe with unique places, and add the list of dates when there was an action
     accionesParsedDf = pd.DataFrame( columns=['LUGAR', 'HISTORICO'] )
     for lugar in accionesData['LUGAR'].unique():
         dates = accionesData[accionesData['LUGAR'] == lugar]['FECHA'].to_list()
@@ -71,7 +73,9 @@ def main():
         print( "\nAcciones y su lista de actuaciones" )
         print( accionesParsedDf )
 
-    logicalMap_sobrepasadas = [fecha[-1]<datetime.now().date()-timedelta(days=30*4) for fecha in accionesParsedDf['HISTORICO'].to_list()]
+    # Make a logical index of exceeded revision time in months
+    months = 4
+    logicalMap_sobrepasadas = [ fecha[-1]<datetime.now().date()-timedelta(days=30*months) for fecha in accionesParsedDf['HISTORICO'].to_list() ]
 
     accionesSobrepasadas = accionesParsedDf[ logicalMap_sobrepasadas ]
     # Copiamos los lugares como DataFrame (doble corchete), luego añadimos columna con última fecha para cada acción
