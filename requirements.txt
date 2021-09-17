@@ -5,6 +5,7 @@
 datetime
 numpy
 pandas
+openpyxl
 
 # Packages with version
 streamlit >= 0.88
