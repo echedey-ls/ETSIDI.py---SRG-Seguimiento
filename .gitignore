@@ -1,0 +1,3 @@
+##### SRG Seguimiento #####
+# Do not upload Streamlit's secrets file
+.streamlit/secrets.*
