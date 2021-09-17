@@ -30,7 +30,7 @@ def retrieve_data_from_drive():
     
 def retrieve_data_from_xlsx():
     '''Gets data from a excel sheet (>2007)'''
-    return pd.read_excel('data/Registro_acciones.xlsx', sheet_name='Actuaciones', usecols='B:C', header=1, parse_dates=True)
+    return pd.read_excel('data/Registro_acciones.xlsx', sheet_name='Actuaciones', usecols='B:D', header=1, parse_dates=True)
 
 def web_gui(sobrepasadasDf, proximasDf):
     '''Uses Streamlit to produce the web page'''
@@ -60,10 +60,16 @@ def main():
     # Change dates type from datetime to date - user-friendlyness
     accionesData['FECHA'] = pd.to_datetime(accionesData['FECHA']).dt.date
 
+    # Ignore 'cancelled' actions
+    lista_canceladas= accionesData['Notas'].str.contains("cancelada", case= False, na= False)
+    accionesData = accionesData[ [ not a for a in lista_canceladas ] ]
+    if dev_consoleOut:
+        print(lista_canceladas)
+
     # Create a new dataframe with unique places, and add the list of dates when there was an action
     accionesParsedDf = pd.DataFrame( columns=['LUGAR', 'HISTORICO'] )
     for lugar in accionesData['LUGAR'].unique():
-        dates = accionesData[accionesData['LUGAR'] == lugar]['FECHA'].to_list()
+        dates = accionesData[ accionesData['LUGAR'] == lugar]['FECHA'].to_list()
         accionesParsedDf = pd.concat(
             [accionesParsedDf,
             pd.DataFrame( {'LUGAR': [lugar], 'HISTORICO': [dates] }, columns=['LUGAR', 'HISTORICO'] ) ], 
