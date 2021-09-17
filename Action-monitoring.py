@@ -30,7 +30,7 @@ def retrieve_data_from_drive():
     
 def retrieve_data_from_xlsx():
     '''Gets data from a excel sheet (>2007)'''
-    return pd.read_excel('registro_acciones.xlsx', sheet_name='Actuaciones', usecols='B:C', header=1, parse_dates=True)
+    return pd.read_excel('data/Registro_acciones.xlsx', sheet_name='Actuaciones', usecols='B:C', header=1, parse_dates=True)
 
 def web_gui(sobrepasadasDf, proximasDf):
     '''Uses Streamlit to produce the web page'''
