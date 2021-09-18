@@ -54,15 +54,10 @@ def web_gui(sobrepasadasDf, proximasDf, todasDf):
             options= todasDf['LUGAR'] )
         zoneDates = todasDf[ todasDf['LUGAR'] == actionSelector ].iat[0, 1]
         nAcciones = len(zoneDates)
-        # Formato al plural en función de cantidad fechas. Hay formas más elegantes de hacerlo (TODO)
-        if nAcciones == 1:
-            n = s = ''
-            wordAccion = 'acción'
-        else:
-            n = 'n'
-            s = 's'
-            wordAccion = 'acciones'
-        st.write(f"En {actionSelector} se ha{n} realizado {nAcciones} {wordAccion} en la{s} siguiente{s} fecha{s}:")
+        # Strings are cut depending on the equality of nAcciones with 1
+        st.write(f"""
+            En {actionSelector} se ha{'n'[:nAcciones!=1]} realizado {nAcciones} acci{'óo'[nAcciones!=1:((nAcciones!=1)+1)]}n{'es'[:2*(nAcciones!=1)]} en la{'s'[:nAcciones!=1]} siguiente{'s'[:nAcciones!=1]} fecha{'s'[:nAcciones!=1]}:
+            """)
         for a in zoneDates: # Esto es una cutrada como una casa (¿chabola?) pero de lo que he probado es lo que más me gusta
             st.write( a )
 
