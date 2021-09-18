@@ -15,7 +15,7 @@ Sources:
 
 import sys, os
 
-from datetime import timedelta, datetime
+from datetime import timedelta, datetime, date
 
 import pandas as pd
 import numpy as np
@@ -32,7 +32,7 @@ def retrieve_data_from_xlsx():
     '''Gets data from a excel sheet (>2007)'''
     return pd.read_excel('data/Registro_acciones.xlsx', sheet_name='Actuaciones', usecols='B:D', header=1, parse_dates=True)
 
-def web_gui(sobrepasadasDf, proximasDf):
+def web_gui(sobrepasadasDf, proximasDf, todasDf):
     '''Uses Streamlit to produce the web page'''
     st.set_page_config(
         page_title= 'Revisiones SinRaboGato',
@@ -45,6 +45,26 @@ def web_gui(sobrepasadasDf, proximasDf):
 
     st.header("Próximas zonas a revisar")
     st.dataframe(proximasDf)
+
+    st.markdown("""---""") # A separator
+
+    with st.expander("Información en de una zona de actuación específica"):
+        st.text("Selecciona una zona para obtener un resumen de sus acciones")
+        actionSelector = st.selectbox(label= 'Ver datos de acción',
+            options= todasDf['LUGAR'] )
+        zoneDates = todasDf[ todasDf['LUGAR'] == actionSelector ].iat[0, 1]
+        nAcciones = len(zoneDates)
+        # Formato al plural en función de cantidad fechas. Hay formas más elegantes de hacerlo (TODO)
+        if nAcciones == 1:
+            n = s = ''
+            wordAccion = 'acción'
+        else:
+            n = 'n'
+            s = 's'
+            wordAccion = 'acciones'
+        st.write(f"En {actionSelector} se ha{n} realizado {nAcciones} {wordAccion} en la{s} siguiente{s} fecha{s}:")
+        for a in zoneDates: # Esto es una cutrada como una casa (¿chabola?) pero de lo que he probado es lo que más me gusta
+            st.write( a )
 
 def main():
     # Read data from excel, drop rows with less than 2 values: LUGAR & FECHA
@@ -118,7 +138,7 @@ def main():
         print( "\n\t--> PRÓXIMAS REVISIONES" )
         print( accionesProximasOut )
     else:
-        web_gui( accionesSobrepasadasOut , accionesProximasOut )
+        web_gui( accionesSobrepasadasOut , accionesProximasOut , accionesParsedDf )
 
 
 if __name__ == "__main__":
