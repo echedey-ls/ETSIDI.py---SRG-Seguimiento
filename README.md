@@ -9,3 +9,4 @@ This program shares many features of a [CMMS](https://en.wikipedia.org/wiki/Comp
 - Ignore cancelled actions
 - Show this data in terminal
 - Show data in a web page with Streamlit statically
+- Show action dates from a selected place
